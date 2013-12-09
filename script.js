@@ -6,7 +6,8 @@
 		orientation: 0,
 		_domElement: document.getElementById('froumi'),
 		moveOneStep: function() {
-			this.position.left++;
+			this.position.left+=Math.cos(this.orientation/360*Math.PI*2);
+			this.position.top+=Math.sin(this.orientation/360*Math.PI*2);
 			this.updateDom();
 		},
 
@@ -15,9 +16,9 @@
 		},
 
 		updateDom: function() {
-			this._domElement.style.left = (this.position.left * 10) + 'px';
-			this._domElement.style.top = (this.position.top * 10) + 'px';
-			this._domElement.style.transform = 'rotate(' + this.orientation + 'deg)';
+			this._domElement.style.left = Math.round(this.position.left * 10) + 'px';
+			this._domElement.style.top = Math.round(this.position.top * 10) + 'px';
+			this._domElement.style.webkitTransform = 'rotate(' + this.orientation + 'deg)';
 		},
 
 		rotateRight: function() {
@@ -32,6 +33,11 @@
 
 		getOrientation: function() {
 			return this.orientation;
+		},
+
+		setOrientation: function(orientation) {
+			this.orientation = orientation;
+			this.updateDom();
 		}
 	};
 
