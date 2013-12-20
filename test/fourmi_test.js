@@ -191,6 +191,30 @@ casper.test.begin("Froumi est affichée", function(test){
 		});
 	});
 
+	casper.test.begin("Froumi se déplace de N pas en arrière", function(test) {
+		casper.thenEvaluate(function() {
+			froumi = new Froumi();
+			froumi.move(-7);
+		}).then(function() {
+			test.assertEvalEquals(function() {
+				return document.getElementById('froumi').style.left;
+			}, '0px', "la position left est correcte");
+			test.assertEvalEquals(function() {
+				return document.getElementById('froumi').style.top;
+			}, '0px', "la position top est correcte");
+			test.assertEval(function() {
+				var froumiElement = document.getElementById('froumi');
+				var backgroundPath = froumiElement.style.backgroundImage;
+				return backgroundPath.indexOf('fourmi-error.gif') >= 0;
+			}, "Image est bien fourmi-error.gif");
+		});
+		
+
+		casper.run( function(){
+			test.done();
+		});
+	});
+
 	casper.test.begin("Froumi change d'index d'image après un pas", function(test) {
 		casper.thenEvaluate(function() {
 			froumi = new Froumi();

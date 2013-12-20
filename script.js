@@ -24,10 +24,18 @@ Froumi.prototype = {
 	},
 
 	move: function( stepCount ) {
+		if(stepCount < 0) {
+			this.talk();
+			return;
+		} 
 		this.position.left += stepCount*Math.round(Math.cos(this.orientation/360*Math.PI*2) * 100) / 100;
 		this.position.top += stepCount*Math.round(Math.sin(this.orientation/360*Math.PI*2) *100)/100;
 		this.imageIndex = ((this.imageIndex + stepCount) % 4);
 		this.updateDom();
+	},
+
+	talk: function() {
+		this._domElement.style.backgroundImage = 'url(Images_Fourmis/fourmi-error.gif)';
 	},
 
 	teleport: function(left, top) {
