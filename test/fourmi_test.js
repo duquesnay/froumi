@@ -248,6 +248,25 @@ casper.test.begin("Froumi est affichée", function(test){
 		});
 	});
 
+	casper.test.begin("Froumi change d'index d'image après 2 pas", function(test) {
+		casper.thenEvaluate(function() {
+			froumi = new Froumi();
+			froumi.moveOneStep();
+			froumi.moveOneStep();
+		}).then(function() {
+			test.assertEvalEquals(function() {
+				return froumi.getCurrentImageIndex();
+			}, 3, "l'image courante est correcte");
+		});
+		
+
+		casper.run( function(){
+			test.done();
+		});
+	});
+
+	
+
 	casper.test.begin("Froumi change d'image après N pas", function(test) {
 		casper.thenEvaluate(function() {
 			froumi = new Froumi();
@@ -268,6 +287,75 @@ casper.test.begin("Froumi est affichée", function(test){
 			test.done();
 		});
 	});
+
+	casper.test.begin("Après N pas, moveOneStep est appelé N fois", function(test) {
+		casper.thenEvaluate(function() {
+			var backupMoveOneStep;
+			calls = 0;
+			froumi = new Froumi();
+			backupMoveOneStep = froumi.moveOneStep;
+
+			froumi.moveOneStep = function(){
+				backupMoveOneStep.call(froumi);
+				calls++;
+			}
+
+			froumi.move(5);
+		}).then(function() {
+			test.assertEvalEquals(function() {
+				return calls;
+			}, 5, "moveOnStep est appelé 5 fois");
+		});
+
+		casper.run( function(){
+			test.done();
+		});
+	});
+
+	casper.test.begin("Un pas doit durer de 100ms", function(test) {
+		casper.thenEvaluate(function() {
+			froumi = new Froumi();
+
+			startDate = new Date().getTime();
+
+			froumi.moveOneStep(function(){
+				dateMove = new Date().getTime();
+			});
+		})
+
+		casper.wait(100, function() {
+			var elapse = casper.evaluate( function(){
+				return dateMove - startDate;
+			});
+
+			test.assert( elapse >= 100, "au moins 100ms avant la fin du pas : " + elapse);
+		});
+
+		casper.run(function() {
+			test.done();
+		});
+	});
+
+	// casper.test.begin("Froumi change d'image a chaque pas durant un déplacement", function(test) {
+	// 	casper.thenEvaluate(function() {
+	// 		froumi = new Froumi();
+	// 		froumi.move(5);
+	// 	}).then(function() {
+	// 		test.assertEvalEquals(function() {
+	// 			return froumi.getCurrentImageIndex();
+	// 		}, 2, "l'image courante est correcte");
+
+	// 		test.assertEval(function() {
+	// 			var froumiElement = document.getElementById('froumi');
+	// 			var backgroundPath = froumiElement.style.backgroundImage;
+	// 			return backgroundPath.indexOf('fourmi22.gif') >= 0;
+	// 		}, "Image est bien fourmi22.gif");
+	// 	});
+
+	// 	casper.run( function(){
+	// 		test.done();
+	// 	});
+	// });
 
 	casper.run( function(){
 		test.done();

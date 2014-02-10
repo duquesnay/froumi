@@ -19,19 +19,27 @@ Froumi.prototype = {
 		return this.imageIndex;
 	},
 
-	moveOneStep: function() {
-		this.move(1);
+	moveOneStep: function(callback) {
+		var stepCount=1;
+		this.position.left += stepCount*Math.round(Math.cos(this.orientation/360*Math.PI*2) * 100) / 100;
+		this.position.top += stepCount*Math.round(Math.sin(this.orientation/360*Math.PI*2) *100)/100;
+		this.imageIndex = ((this.imageIndex + 1) % 4);
+		this.updateDom();
+		setTimeout(callback, 100);
 	},
 
 	move: function( stepCount ) {
 		if(stepCount < 0) {
 			this.talk();
 			return;
-		} 
-		this.position.left += stepCount*Math.round(Math.cos(this.orientation/360*Math.PI*2) * 100) / 100;
-		this.position.top += stepCount*Math.round(Math.sin(this.orientation/360*Math.PI*2) *100)/100;
-		this.imageIndex = ((this.imageIndex + stepCount) % 4);
-		this.updateDom();
+		}
+		for( var i=0;i<stepCount;i++){
+		 	this.moveOneStep();
+		}
+	},
+
+	walk: function( setps ) {
+
 	},
 
 	talk: function() {
@@ -75,4 +83,4 @@ Froumi.prototype = {
 	}
 };
 
-var toto = new Froumi();
+var fourmi = new Froumi();
